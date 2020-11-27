@@ -15,7 +15,7 @@ int now=0;
 int main(){
 	// Do initializations.
 	GPIO_init();
-
+	Set_HCLK(freq[now]);
 	for (;;){
 	// change LED state
 		GPIOA->BSRR=(1<<5);
@@ -44,8 +44,9 @@ void Set_HCLK( int f){
 	SET_REG(RCC->CFGR, 0x00000003, 0x0 )    // change to msi
 	// 2. set the target clock source
 	SET_REG(RCC->CR, 0x03000000, 0x00000000 )  // disable pll
+	while((RCC->CR & RCC_CR_PLLRDY)==1);
 	if(f==1){
-		SET_REG(RCC->PLLCFGR, 0x0700ffff, 0x01000831 )
+		SET_REG(RCC->PLLCFGR, 0x0700ffff, 0x07000831 )
 		SET_REG(FLASH->ACR,FLASH_ACR_LATENCY,FLASH_ACR_LATENCY_0WS)
 	}
 	else if(f==6){
@@ -62,6 +63,7 @@ void Set_HCLK( int f){
 		SET_REG(FLASH->ACR,FLASH_ACR_LATENCY,FLASH_ACR_LATENCY_1WS)
 	}
 	SET_REG(RCC->CR, 0x03000000, 0x01000000 )  // enable pll
+	while((RCC->CR & RCC_CR_PLLRDY)==0);
 	// 3. change to the target clock source
 	SET_REG(RCC->CFGR, 0x00000003, 0x3 )   // change to pll
 }
@@ -101,26 +103,76 @@ void buttom(){
 				}
 			}
 		}
-
+		int co=0;
 		if(now==0){
 			now=1;
 			Set_HCLK(freq[now]);
+			while(co<10000){
+				x=GPIOC->IDR;
+				x&=0x00002000;
+				if(x!=0){
+					co++;
+				}
+				else{
+					co=0;
+				}
+			}
 		}
 		else if(now==1){
 			now=2;
 			Set_HCLK(freq[now]);
+			while(co<10000){
+				x=GPIOC->IDR;
+				x&=0x00002000;
+				if(x!=0){
+					co++;
+				}
+				else{
+					co=0;
+				}
+			}
 		}
 		else if(now==2){
 			now=3;
 			Set_HCLK(freq[now]);
+			while(co<10000){
+				x=GPIOC->IDR;
+				x&=0x00002000;
+				if(x!=0){
+					co++;
+				}
+				else{
+					co=0;
+				}
+			}
 		}
 		else if(now==3){
 			now=4;
 			Set_HCLK(freq[now]);
+			while(co<10000){
+				x=GPIOC->IDR;
+				x&=0x00002000;
+				if(x!=0){
+					co++;
+				}
+				else{
+					co=0;
+				}
+			}
 		}
 		else if(now==4){
 			now=0;
 			Set_HCLK(freq[now]);
+			while(co<10000){
+				x=GPIOC->IDR;
+				x&=0x00002000;
+				if(x!=0){
+					co++;
+				}
+				else{
+					co=0;
+				}
+			}
 		}
 
 	}
