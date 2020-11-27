@@ -16,9 +16,6 @@ void SysTick_config () {
 	// SysTick
 	SysTick->LOAD=5999999;
 	SET_REG(SysTick->CTRL, 0x00000007, 0x00000003 );  // external clock == > HSI/8
-
-	// NVIC
-
 }
 
 void SysTick_Handler () {
