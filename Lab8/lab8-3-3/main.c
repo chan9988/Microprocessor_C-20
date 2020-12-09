@@ -240,9 +240,21 @@ int main(void) {
 		if(USART1->ISR & USART_ISR_RXNE){
 			c=USART1->RDR;
 			if(state==0&&(c=='\n'||c=='\r')){
-				co[i]='\0';
-				command(co);
-				i=0;
+				if(i==0){
+					while (!(USART1->ISR & USART_ISR_TXE));
+					USART1->TDR='\r';
+					while (!(USART1->ISR & USART_ISR_TXE));
+					USART1->TDR='\n';
+					while (!(USART1->ISR & USART_ISR_TXE));
+					USART1->TDR='>';
+					while (!(USART1->ISR & USART_ISR_TXE));
+
+				}
+				else{
+					co[i]='\0';
+					command(co);
+					i=0;
+				}
 			}
 			else if(state==1&&c=='q'){
 				state=0;
